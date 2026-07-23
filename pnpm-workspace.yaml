@@ -3,3 +3,6 @@ packages:
 
 allowBuilds:
   sharp: true
+
+minimumReleaseAgeExclude:
+  - '@vitejs/plugin-rsc@0.5.30'
