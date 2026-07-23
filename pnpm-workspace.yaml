@@ -2,7 +2,9 @@ packages:
   - .
 
 allowBuilds:
+  esbuild: true
   sharp: true
+  workerd: true
 
 minimumReleaseAgeExclude:
   - '@vitejs/plugin-rsc@0.5.30'

@@ -1,4 +1,5 @@
 .next
+.wrangler
 dist
 node_modules
 .env*
