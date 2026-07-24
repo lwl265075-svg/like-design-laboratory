@@ -12,6 +12,8 @@ const projects = [
     title: 'IGNIS FIRE',
     type: '伸缩式冲顶炉设计',
     image: '/assets/project-ignis-fire-clean.webp',
+    heroImage: '/assets/hero-ignis-fire-v2.webp',
+    cardImage: '/assets/project-ignis-fire-lineup.webp',
     tags: ['工业设计', '户外装备', '结构表达'],
     detail: '围绕露营烹饪场景展开产品形态、结构比例与可用性设计，强调便携、稳定与机械感表达。',
   },
@@ -92,15 +94,84 @@ const projects = [
     tags: ['工业设计', '公共设施', '户外环保'],
     detail: '围绕公共空间灭蚊场景展开产品形态、太阳能供电与景观融合设计，强调环保、高效与便捷户外体验。',
   },
+  {
+    title: 'Mintu导盲鞍',
+    type: '导盲犬智能鞍具设计',
+    image: '/assets/project-13-mintu.webp',
+    tags: ['关怀设计', '穿戴产品', '导盲设备'],
+    detail: '给导盲犬更舒适的工作条件，更好地帮助残疾人。',
+  },
+  {
+    title: 'Yuunxi排烟制冷一体集成',
+    type: '排烟制冷一体集成设计',
+    image: '/assets/project-14-yuunxi.webp',
+    tags: ['家用电器', '厨具产品', '工业设计'],
+    detail: '改善烹饪环境，让烹饪过程更清爽、舒适和高效。',
+  },
+  {
+    title: 'miro免淘米自动电饭煲',
+    type: '免淘米自动电饭煲设计',
+    image: '/assets/project-15-miro.webp',
+    tags: ['家用电器', '厨具产品', '智能产品'],
+    detail: '一键煮饭，解放双手，为用户带来更加便捷、高效且兼顾口感的烹饪体验。',
+  },
+  {
+    title: 'LNM×NIV冬日通勤打造的高效融冰设备',
+    type: '冬日通勤高效融冰设备设计',
+    image: '/assets/project-16-lnm-niv.webp',
+    tags: ['户外产品', '用户旅程', '工业设计'],
+    detail: '基于冬日车体结冰背景下实现快速融冰，让冬日出行更加轻松高效。',
+  },
+  {
+    title: 'Aquavad口腔清洁',
+    type: '便捷式负压口腔清洁设计',
+    image: '/assets/project-17-aquavad.webp',
+    tags: ['关怀设计', '洗漱用品', '产品设计'],
+    detail: '便捷式负压牙刷专为老年人群干口症及口腔清洁需求设计。',
+  },
+  {
+    title: 'Aura等离子美容仪',
+    type: '等离子美容仪设计',
+    image: '/assets/project-18-aura.webp',
+    tags: ['美容仪', '等离子', '科技简约'],
+    detail: '弱化传统设备的冰冷机械感，通过圆润轮廓、简洁界面与柔和光效，建立更温和可信的产品形象。',
+  },
+  {
+    title: 'NOMAD单兵摄影师行李系统设计',
+    type: '单兵摄影师行李系统设计',
+    image: '/assets/project-19-nomad.webp',
+    tags: ['户外产品', '工业设计', '单兵摄影'],
+    detail: '通过一秒卡扣解耦，完美实现“生活托运、器材随身、极速通关”的极致差旅秩序。',
+  },
+  {
+    title: '骏岁如歌-旋律唤醒新月',
+    type: '马年模块化音乐月历设计',
+    image: '/assets/project-20-junsui.webp',
+    tags: ['马年文创', '月历设计', '模块化'],
+    detail: '用户通过旋转把手转动两侧转轴，在八音盒清脆的旋律中，旧月卷藏的同时，新月缓缓展开，象征辞旧迎新，为旧月的收获喜悦，为新月的到来满怀期待。',
+  },
+  {
+    title: '丹霞微景艺',
+    type: '丹霞文化微缩景观文创',
+    image: '/assets/project-21-danxia.webp',
+    tags: ['文创设计', '微缩景观', '文化好礼'],
+    detail: '秉持绿色再生理念，致力于打造环保、可持续的艺术品。',
+  },
 ]
 
 const featuredProjects = [projects[0], projects[1], projects[4], projects[6], projects[8]]
-const awardImages = Array.from({ length: 31 }, (_, index) => ({
+const awardImages = Array.from({ length: 51 }, (_, index) => ({
   index: index + 1,
   src: `/assets/awards/award-${String(index + 1).padStart(2, '0')}.webp`,
 }))
-const portraitAwardImages = awardImages.filter(({ index }) => index <= 10 || index >= 17)
+const portraitAwardImages = awardImages.filter(({ index }) => index <= 10 || (index >= 17 && index <= 31))
 const landscapeAwardImages = awardImages.filter(({ index }) => index >= 11 && index <= 16)
+const addedPortraitAwardImages = awardImages.filter(({ index }) =>
+  [34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47].includes(index),
+)
+const addedLandscapeAwardImages = awardImages.filter(({ index }) =>
+  [32, 33, 35, 48, 49, 50, 51].includes(index),
+)
 
 const ignifierStages = [
   {
@@ -334,7 +405,7 @@ function HeroCarousel({ isReady }) {
       <div className="heroSlides">
         {featuredProjects.map((project, index) => (
           <article className={`heroSlide${index === activeIndex ? ' is-active' : ''}`} key={project.title} aria-hidden={index !== activeIndex}>
-            <img className="heroSlide__media" src={project.image} alt="" width="1600" height="900" fetchPriority={index === 0 ? 'high' : 'auto'} />
+            <img className="heroSlide__media" src={project.heroImage ?? project.image} alt="" width="1600" height="900" fetchPriority={index === 0 ? 'high' : 'auto'} />
             <div className="heroSlide__wash" />
             <div className="heroSlide__copy">
               <span>{project.type}</span>
@@ -370,13 +441,42 @@ function HeroCarousel({ isReady }) {
   )
 }
 
+function ScrollDock({ isReady }) {
+  const rootRef = useRef(null)
+
+  useGSAP(() => {
+    if (!isReady) return undefined
+    const mm = gsap.matchMedia()
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      const glyphTween = gsap.fromTo(
+        '.scrollDock__glyph',
+        { y: -3, autoAlpha: 0.45 },
+        { y: 5, autoAlpha: 1, duration: 0.82, ease: 'sine.inOut', repeat: -1, yoyo: true },
+      )
+      return () => glyphTween.kill()
+    })
+    return () => mm.revert()
+  }, { scope: rootRef, dependencies: [isReady], revertOnUpdate: true })
+
+  return (
+    <a className="scrollDock" href="#projects" ref={rootRef} aria-label="向下滚动查看更多精选项目">
+      <span className="scrollDock__icon" aria-hidden="true">
+        <svg viewBox="0 0 30 42">
+          <path className="scrollDock__trail" d="M15 7v18" />
+          <path className="scrollDock__glyph" d="m10 22 5 5 5-5" />
+        </svg>
+      </span>
+    </a>
+  )
+}
+
 function ProjectCard({ project, index, onOpen }) {
   const open = () => onOpen(project, index)
   return (
     <article className="projectCard js-project-card">
       <button className="projectCard__hit" type="button" onClick={open} aria-label={`查看 ${project.title} 项目`} />
       <div className="projectCard__visual">
-        <img src={project.image} alt={`${project.title} 项目图`} width="1600" height="900" loading={index > 3 ? 'lazy' : 'eager'} />
+        <img src={project.cardImage ?? project.image} alt={`${project.title} 项目图`} width="1600" height="900" loading={index > 3 ? 'lazy' : 'eager'} />
         <span className="projectCard__index">{String(index + 1).padStart(2, '0')}</span>
         <span className="projectCard__view">{index < 2 ? 'SCROLL STORY' : 'VIEW PROJECT'} ↗</span>
       </div>
@@ -495,7 +595,7 @@ function DesignProcess() {
         <figcaption><span>FIELD NOTES / PROTOTYPING / CRITIQUE</span><p>真实的项目工作记录：从用户调研、需求分析、方案迭代，到模型验证与最终呈现。</p></figcaption>
       </figure>
       <figure className="processPanel processPanel--secondary">
-        <div className="processPanel__image"><img src="/assets/studio-team.webp" alt="来点设计团队与工作室学员合影" width="1620" height="761" loading="lazy" /></div>
+        <div className="processPanel__image"><img src="/assets/studio-team-v2.webp" alt="来点设计团队与工作室学员合影" width="1620" height="761" loading="lazy" /></div>
         <figcaption><span>TEAM / COLLABORATION</span><p>由产品设计师与工作室学员组成的协作团队，在真实项目里共同讨论、验证与成长。</p></figcaption>
       </figure>
       <figure className="processPanel processPanel--team-group">
@@ -538,16 +638,16 @@ function AwardsGallery() {
       <div className="awardsStage" ref={stageRef}>
         <div className="awardsStage__header">
           <div><span>03 / RECOGNITION</span><h2>获奖与现场</h2></div>
-          <p>31 RECENT AWARDS · 2024—2026</p>
+          <p>51 RECENT AWARDS · 2023—2026</p>
         </div>
         <div className="awardsTrack" ref={trackRef}>
           <figure className="awardScene awardScene--wide">
-            <img src="/assets/awards-ceremony-01.webp" alt="GUIDC 2025 一等奖颁奖现场合影" width="1800" height="1091" loading="lazy" />
-            <figcaption><strong>GUIDC 2025</strong><span>THE FIRST PRIZE / AWARD CEREMONY</span></figcaption>
+            <img src="/assets/awards-ceremony-01-v2.webp" alt="来点设计实验室获奖奖杯与工作室现场" width="1279" height="1706" loading="lazy" />
+            <figcaption><strong>AWARD HONORS</strong><span>DESIGN PRACTICE / STUDIO ARCHIVE</span></figcaption>
           </figure>
           <figure className="awardScene">
-            <img src="/assets/awards-ceremony-02.webp" alt="设计赛事与颁奖活动现场记录" width="1800" height="762" loading="lazy" />
-            <figcaption><strong>AWARD MOMENTS</strong><span>BETTER DESIGN / BETTER FUTURE</span></figcaption>
+            <img src="/assets/awards-ceremony-02-v2.webp" alt="来点设计实验室 Better Design Award 获奖奖杯" width="1279" height="1706" loading="lazy" />
+            <figcaption><strong>BETTER DESIGN AWARD</strong><span>BETTER DESIGN / BETTER FUTURE</span></figcaption>
           </figure>
           <div className="certificateGrid certificateGrid--portrait" aria-label="竖版获奖证书滚动画廊">
             {portraitAwardImages.map(({ src, index }) => (
@@ -565,8 +665,24 @@ function AwardsGallery() {
               </figure>
             ))}
           </div>
+          <div className="certificateGrid certificateGrid--portrait" aria-label="新增竖版获奖证书滚动画廊">
+            {addedPortraitAwardImages.map(({ src, index }) => (
+              <figure className="certificateCard" key={src}>
+                <img src={src} alt={`来点设计实验室获奖证书 ${index}`} width="1100" height="1500" loading="lazy" />
+                <figcaption><span>{String(index).padStart(2, '0')}</span><span>AWARD ARCHIVE</span></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="certificateGrid certificateGrid--landscape" aria-label="新增横版获奖证书滚动画廊">
+            {addedLandscapeAwardImages.map(({ src, index }) => (
+              <figure className="certificateCard certificateCard--landscape" key={src}>
+                <img src={src} alt={`来点设计实验室获奖证书 ${index}`} width="1500" height="1060" loading="lazy" />
+                <figcaption><span>{String(index).padStart(2, '0')}</span><span>AWARD ARCHIVE</span></figcaption>
+              </figure>
+            ))}
+          </div>
           <div className="awardsTrack__end">
-            <span>31 / 31</span>
+            <span>51 / 51</span>
             <strong>持续实践，<br />让成果发生。</strong>
             <p>KEEP MAKING · KEEP QUESTIONING</p>
           </div>
@@ -923,6 +1039,7 @@ function HomePage({ introComplete, onIntroComplete, onOpenProject }) {
         <a className="skipLink" href="#projects">跳到精选项目</a>
         <Header />
         <HeroCarousel isReady={introComplete} />
+        <ScrollDock isReady={introComplete} />
         <SelectedWorks onOpen={onOpenProject} />
         <DesignProcess />
         <AwardsGallery />

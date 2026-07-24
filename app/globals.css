@@ -387,6 +387,50 @@ a:focus-visible,
   50%, 100% { transform: translateX(100%); }
 }
 
+.scrollDock {
+  display: grid;
+  width: 100%;
+  height: 82px;
+  place-items: center;
+  color: #1e1e1e;
+  background: var(--paper);
+}
+
+.scrollDock__icon {
+  display: grid;
+  width: 30px;
+  height: 42px;
+  border: 1px solid rgba(26, 26, 26, 0.42);
+  border-radius: 999px;
+  place-items: center;
+  transition: border-color 240ms ease, background-color 240ms ease;
+}
+
+.scrollDock__icon svg {
+  width: 30px;
+  height: 42px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.2;
+}
+
+.scrollDock__trail {
+  opacity: 0.38;
+}
+
+.scrollDock:hover .scrollDock__icon {
+  border-color: rgba(26, 26, 26, 0.78);
+  background: rgba(26, 26, 26, 0.04);
+}
+
+.scrollDock:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -5px;
+}
+
 .selectedWorks {
   padding: clamp(90px, 11vw, 160px) var(--page-x);
   background: var(--paper);
@@ -623,7 +667,7 @@ a:focus-visible,
 
 .processPanel--secondary {
   width: min(82%, 1320px);
-  margin-left: auto;
+  margin-inline: auto;
 }
 
 .processPanel--secondary .processPanel__image {
@@ -631,7 +675,8 @@ a:focus-visible,
 }
 
 .processPanel--team-group {
-  width: 100%;
+  width: min(46%, 900px);
+  margin-inline: auto;
 }
 
 .processPanel--team-group .processPanel__image {
@@ -1721,6 +1766,10 @@ a:focus-visible,
     display: none;
   }
 
+  .scrollDock {
+    height: 70px;
+  }
+
   .selectedWorks {
     padding-top: 90px;
     padding-bottom: 100px;
@@ -1780,6 +1829,10 @@ a:focus-visible,
 
   .processPanel--secondary {
     width: 100%;
+  }
+
+  .processPanel--team-group {
+    width: 88%;
   }
 
   .processPanel figcaption {
