@@ -1123,37 +1123,140 @@ a:focus-visible,
 
 .ignifierScroll {
   position: relative;
-  height: 680vh;
+  height: 800vh;
+  min-height: 800vh;
+  background: #d3d3d1;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Microsoft YaHei", sans-serif;
 }
 
 .ignifierScroll__sticky {
   position: sticky;
   top: 0;
-  height: 100svh;
-  min-height: 640px;
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  place-items: center;
   overflow: hidden;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.032) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.032) 1px, transparent 1px),
-    #d8d8d6;
-  background-size: 25vw 25vh;
+  background: #d3d3d1;
+  isolation: isolate;
 }
 
-.ignifierScroll__frame {
+.ignifierScroll__sticky::before,
+.ignifierScroll__sticky::after {
   position: absolute;
-  inset: 8vh 3vw 2vh 22vw;
-  width: 74vw;
-  height: 86vh;
+  inset: 0;
+  z-index: 2;
+  content: "";
+  pointer-events: none;
+}
+
+.ignifierScroll__sticky::before {
+  background:
+    linear-gradient(rgba(30, 30, 28, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 30, 28, 0.028) 1px, transparent 1px);
+  background-size: 25vw 25vh;
+  opacity: 0.42;
+}
+
+.ignifierScroll__sticky::after {
+  background: radial-gradient(circle at 50% 50%, transparent 62%, rgba(106, 106, 101, 0.13) 100%);
+  opacity: 0.46;
+}
+
+.ignifierScroll__chrome {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: min(calc(100% - 112px), 1700px);
+  min-height: 64px;
+  border-bottom: 1px solid rgba(28, 28, 28, 0.13);
+  color: rgba(28, 28, 28, 0.56);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.ignifierScroll__chrome button {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 0;
+  border: 0;
+  color: rgba(28, 28, 28, 0.72);
+  background: transparent;
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ignifierScroll__chrome button:hover,
+.ignifierScroll__chrome button:focus-visible {
+  color: #1c1c1c;
+}
+
+.ignifierScroll__canvas {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #d3d3d1;
   object-fit: contain;
+  object-position: center center;
+  filter: saturate(0.98) contrast(1.01);
+}
+
+.ignifierScroll__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: transparent;
+  pointer-events: none;
 }
 
 .ignifierScroll__copy {
   position: absolute;
-  z-index: 2;
-  top: clamp(112px, 15vh, 170px);
-  left: var(--page-x);
-  width: min(30vw, 430px);
+  z-index: 4;
+  width: min(360px, 24vw);
+  color: rgba(28, 28, 28, 0.84);
+  line-height: normal;
+  pointer-events: none;
   animation: story-copy-in 480ms cubic-bezier(0.2, 0.7, 0, 1) both;
+}
+
+.ignifierScroll__copy--0 {
+  top: max(102px, 12vh);
+  left: max(56px, calc((100vw - 1700px) / 2));
+}
+
+.ignifierScroll__copy--1,
+.ignifierScroll__copy--3 {
+  right: max(56px, calc((100vw - 1700px) / 2));
+  bottom: max(68px, 8vh);
+}
+
+.ignifierScroll__copy--2,
+.ignifierScroll__copy--4 {
+  bottom: max(68px, 8vh);
+  left: max(56px, calc((100vw - 1700px) / 2));
+}
+
+.ignifierScroll__copy--5 {
+  bottom: max(68px, 8vh);
+  left: 50%;
+  width: min(420px, calc(100vw - 48px));
+  text-align: center;
+  transform: translateX(-50%);
 }
 
 @keyframes story-copy-in {
@@ -1161,30 +1264,41 @@ a:focus-visible,
   to { opacity: 1; transform: translateY(0); }
 }
 
+.ignifierScroll__copy--5 {
+  animation-name: story-copy-center-in;
+}
+
+@keyframes story-copy-center-in {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .ignifierScroll__copy > span {
   display: block;
-  margin-bottom: 12px;
-  color: #6c6c69;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  margin-bottom: 10px;
+  color: rgba(28, 28, 28, 0.52);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .ignifierScroll__copy > span::before {
   display: block;
   width: 44px;
-  height: 1px;
+  height: 2px;
   margin-bottom: 16px;
   content: "";
-  background: var(--accent);
+  background: rgba(214, 118, 34, 0.72);
 }
 
 .ignifierScroll__copy h1 {
   margin: 0;
-  font-size: clamp(35px, 4.3vw, 66px);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.055em;
+  color: #1b1b1a;
+  font-size: clamp(34px, 3.1vw, 58px);
+  font-weight: 840;
+  line-height: 0.96;
+  letter-spacing: 0;
 }
 
 .ignifierScroll__copy h1 span {
@@ -1194,63 +1308,54 @@ a:focus-visible,
 .ignifierScroll__copy strong,
 .ignifierScroll__copy em {
   display: block;
-  margin-top: 10px;
-  font-size: 13px;
+  margin-top: 14px;
+  color: rgba(28, 28, 28, 0.72);
+  font-size: 17px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 720;
+  line-height: 1.35;
 }
 
 .ignifierScroll__copy em {
-  margin-top: 4px;
-  color: #696966;
-  font-size: 8px;
-  letter-spacing: 0.12em;
+  margin-top: 7px;
+  color: rgba(28, 28, 28, 0.46);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .ignifierScroll__copy p {
-  margin: 22px 0 0;
-  color: #666;
-  font-size: 12px;
-  line-height: 1.8;
+  margin: 18px 0 0;
+  color: rgba(28, 28, 28, 0.62);
+  font-size: 14px;
+  line-height: 1.82;
 }
 
-.detailProgress {
+.ignifierScroll__copy:not(.ignifierScroll__copy--0) h1 {
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.ignifierScroll__progress {
   --detail-progress: 0;
   position: absolute;
-  z-index: 3;
-  right: var(--page-x);
-  bottom: 42px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: #656562;
-  font-size: 7px;
-  letter-spacing: 0.14em;
-}
-
-.detailProgress i {
-  position: relative;
-  width: 100px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 6;
   height: 1px;
-  background: rgba(0, 0, 0, 0.16);
+  background: rgba(28, 28, 28, 0.12);
+  pointer-events: none;
 }
 
-.detailProgress b {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
+.ignifierScroll__progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 28, 28, 0.42);
   transform: scaleX(var(--detail-progress));
   transform-origin: left;
-}
-
-.ignifierScroll__counter {
-  position: absolute;
-  right: var(--page-x);
-  bottom: 70px;
-  color: #666;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  font-variant-numeric: tabular-nums;
 }
 
 .glideHero {
@@ -1808,49 +1913,55 @@ a:focus-visible,
   }
 
   .ignifierScroll {
-    height: 590vh;
+    height: 640vh;
+    min-height: 640vh;
   }
 
-  .ignifierScroll__sticky {
-    min-height: 620px;
+  .ignifierScroll__chrome {
+    width: calc(100% - 32px);
+    min-height: 56px;
   }
 
-  .ignifierScroll__frame {
-    inset: 15vh 0 16vh;
-    width: 100vw;
-    height: 69vh;
-  }
-
-  .ignifierScroll__copy {
-    top: 86px;
-    left: var(--page-x);
-    width: calc(100% - 40px);
-    padding: 16px;
-    background: rgba(224, 224, 221, 0.82);
-    backdrop-filter: blur(10px);
-  }
-
-  .ignifierScroll__copy > span::before {
+  .ignifierScroll__chrome > span {
     display: none;
   }
 
-  .ignifierScroll__copy h1 {
-    font-size: 35px;
+  .ignifierScroll__copy {
+    width: min(300px, calc(100vw - 40px));
+  }
+
+  .ignifierScroll__copy--0,
+  .ignifierScroll__copy--1,
+  .ignifierScroll__copy--2,
+  .ignifierScroll__copy--3,
+  .ignifierScroll__copy--4 {
+    right: auto;
+    left: 20px;
+  }
+
+  .ignifierScroll__copy--0 {
+    top: 72px;
+  }
+
+  .ignifierScroll__copy--1,
+  .ignifierScroll__copy--2,
+  .ignifierScroll__copy--3,
+  .ignifierScroll__copy--4 {
+    bottom: 58px;
+  }
+
+  .ignifierScroll__copy--5 {
+    bottom: 58px;
+  }
+
+  .ignifierScroll__copy h1,
+  .ignifierScroll__copy:not(.ignifierScroll__copy--0) h1 {
+    font-size: clamp(30px, 10vw, 42px);
   }
 
   .ignifierScroll__copy p {
-    margin-top: 12px;
-    font-size: 10px;
-  }
-
-  .detailProgress {
-    right: 20px;
-    bottom: 24px;
-  }
-
-  .ignifierScroll__counter {
-    right: 20px;
-    bottom: 49px;
+    font-size: 13px;
+    line-height: 1.7;
   }
 
   .glideHero {

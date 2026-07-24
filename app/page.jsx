@@ -643,35 +643,113 @@ function DetailHeader({ number, onBack }) {
 
 function IgnifierProject({ onBack }) {
   const rootRef = useRef(null)
-  const frameRef = useRef(null)
+  const canvasRef = useRef(null)
   const progressRef = useRef(null)
   const stageIndexRef = useRef(0)
+  const targetProgressRef = useRef(0)
+  const currentProgressRef = useRef(0)
+  const imagesRef = useRef([])
+  const lastRenderedFrameRef = useRef(-1)
+  const animationFrameRef = useRef(0)
   const [stageIndex, setStageIndex] = useState(0)
 
   useEffect(() => {
-    let cancelled = false
-    const preload = () => {
-      if (cancelled) return
-      for (let index = 1; index <= 240; index += 1) {
-        const image = new Image()
-        image.src = framePath(index)
+    let isMounted = true
+
+    const updateCanvasSize = () => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const width = Math.round(window.innerWidth * dpr)
+      const height = Math.round(window.innerHeight * dpr)
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width
+        canvas.height = height
       }
     }
-    const id = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(preload, { timeout: 1200 })
-      : window.setTimeout(preload, 180)
-    return () => {
-      cancelled = true
-      if ('cancelIdleCallback' in window) window.cancelIdleCallback(id)
-      else window.clearTimeout(id)
-    }
-  }, [])
 
-  useGSAP(() => {
-    const update = (progress) => {
-      const frame = Math.min(240, Math.max(1, Math.round(progress * 239) + 1))
-      if (frameRef.current) frameRef.current.src = framePath(frame)
-      if (progressRef.current) progressRef.current.style.setProperty('--detail-progress', progress)
+    const nearestLoadedFrame = (targetFrame) => {
+      if (imagesRef.current[targetFrame]) return targetFrame
+      for (let offset = 1; offset < 240; offset += 1) {
+        const previous = targetFrame - offset
+        const next = targetFrame + offset
+        if (previous >= 0 && imagesRef.current[previous]) return previous
+        if (next < 240 && imagesRef.current[next]) return next
+      }
+      return -1
+    }
+
+    const drawFrame = (targetFrame) => {
+      const canvas = canvasRef.current
+      const drawableFrame = nearestLoadedFrame(targetFrame)
+      if (!canvas || drawableFrame < 0 || drawableFrame === lastRenderedFrameRef.current) return
+      const image = imagesRef.current[drawableFrame]
+      const context = canvas.getContext('2d')
+      updateCanvasSize()
+
+      const imageWidth = image.naturalWidth || image.width
+      const imageHeight = image.naturalHeight || image.height
+      const scale = Math.min(canvas.width / imageWidth, canvas.height / imageHeight)
+      const width = imageWidth * scale
+      const height = imageHeight * scale
+      const x = (canvas.width - width) / 2
+      const y = (canvas.height - height) / 2
+
+      context.fillStyle = '#d3d3d1'
+      context.fillRect(0, 0, canvas.width, canvas.height)
+      context.imageSmoothingEnabled = true
+      context.imageSmoothingQuality = 'high'
+      context.drawImage(image, x, y, width, height)
+      lastRenderedFrameRef.current = drawableFrame
+    }
+
+    const loadFrame = (index) => {
+      if (imagesRef.current[index]) return Promise.resolve(imagesRef.current[index])
+      return new Promise((resolve, reject) => {
+        const image = new Image()
+        image.decoding = 'async'
+        image.onload = () => {
+          if (!isMounted) return
+          imagesRef.current[index] = image
+          if (index === 0) drawFrame(0)
+          resolve(image)
+        }
+        image.onerror = reject
+        image.src = framePath(index + 1)
+      })
+    }
+
+    const preloadFrames = async () => {
+      try {
+        await loadFrame(0)
+        await Promise.all(Array.from({ length: 60 }, (_, index) => index + 1).map(loadFrame))
+
+        const remainingFrames = Array.from({ length: 179 }, (_, index) => index + 61)
+        let cursor = 0
+        const workers = Array.from({ length: 10 }, async () => {
+          while (cursor < remainingFrames.length && isMounted) {
+            const frameIndex = remainingFrames[cursor]
+            cursor += 1
+            await loadFrame(frameIndex)
+          }
+        })
+        await Promise.all(workers)
+      } catch (error) {
+        console.error('Failed to preload IGNIFIER sequence frames', error)
+      }
+    }
+
+    const animate = () => {
+      const target = Math.min(Math.max(targetProgressRef.current, 0), 1)
+      const delta = target - currentProgressRef.current
+      const smoothing = Math.abs(delta) > 0.12 ? 0.2 : 0.12
+      currentProgressRef.current = Math.abs(delta) < 0.0005
+        ? target
+        : currentProgressRef.current + delta * smoothing
+
+      const progress = currentProgressRef.current
+      drawFrame(Math.round(progress * 239))
+
       let nextStage = 0
       ignifierStages.forEach((stage, index) => {
         if (progress >= stage.at) nextStage = index
@@ -680,6 +758,32 @@ function IgnifierProject({ onBack }) {
         stageIndexRef.current = nextStage
         setStageIndex(nextStage)
       }
+
+      animationFrameRef.current = requestAnimationFrame(animate)
+    }
+
+    const handleResize = () => {
+      updateCanvasSize()
+      lastRenderedFrameRef.current = -1
+      drawFrame(Math.round(currentProgressRef.current * 239))
+    }
+
+    updateCanvasSize()
+    preloadFrames()
+    animationFrameRef.current = requestAnimationFrame(animate)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      isMounted = false
+      cancelAnimationFrame(animationFrameRef.current)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  useGSAP(() => {
+    const update = (progress) => {
+      targetProgressRef.current = progress
+      if (progressRef.current) progressRef.current.style.setProperty('--detail-progress', progress)
     }
     const trigger = ScrollTrigger.create({
       trigger: rootRef.current,
@@ -696,21 +800,26 @@ function IgnifierProject({ onBack }) {
 
   return (
     <main className="detailPage detailPage--ignifier">
-      <DetailHeader number={1} onBack={onBack} />
       <section className="ignifierScroll" ref={rootRef}>
         <div className="ignifierScroll__sticky">
-          <img ref={frameRef} className="ignifierScroll__frame" src={framePath(1)} alt="IGNIFIER 原野户外伸缩冲顶炉展开过程" width="1920" height="1080" />
+          <div className="ignifierScroll__chrome">
+            <button type="button" onClick={onBack}>← <span>BACK TO WORKS</span></button>
+            <span>LIKE.DESIGN / PROJECT 01</span>
+          </div>
+          <canvas
+            ref={canvasRef}
+            className="ignifierScroll__canvas"
+            aria-label="IGNIFIER outdoor stove scroll animation"
+          />
+          <div className="ignifierScroll__vignette" aria-hidden="true" />
           <div className={`ignifierScroll__copy ignifierScroll__copy--${stageIndex}`} key={stage.eyebrow}>
             <span>{stage.eyebrow}</span>
             <h1>{stage.title.split('\n').map((line) => <span key={line}>{line}</span>)}</h1>
-            <strong>{stage.subtitle}</strong>
+            {stageIndex === 0 && <strong>{stage.subtitle}</strong>}
             {stage.english && <em>{stage.english}</em>}
             <p>{stage.copy}</p>
           </div>
-          <div className="detailProgress" ref={progressRef}>
-            <span>SCROLL STORY</span><i><b /></i>
-          </div>
-          <span className="ignifierScroll__counter">{String(stageIndex + 1).padStart(2, '0')} / {String(ignifierStages.length).padStart(2, '0')}</span>
+          <div className="ignifierScroll__progress" ref={progressRef} aria-hidden="true"><i /></div>
         </div>
       </section>
     </main>
