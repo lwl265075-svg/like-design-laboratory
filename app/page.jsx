@@ -95,7 +95,12 @@ const projects = [
 ]
 
 const featuredProjects = [projects[0], projects[1], projects[4], projects[6], projects[8]]
-const awardImages = Array.from({ length: 31 }, (_, index) => `/assets/awards/award-${String(index + 1).padStart(2, '0')}.webp`)
+const awardImages = Array.from({ length: 31 }, (_, index) => ({
+  index: index + 1,
+  src: `/assets/awards/award-${String(index + 1).padStart(2, '0')}.webp`,
+}))
+const portraitAwardImages = awardImages.filter(({ index }) => index <= 10 || index >= 17)
+const landscapeAwardImages = awardImages.filter(({ index }) => index >= 11 && index <= 16)
 
 const ignifierStages = [
   {
@@ -490,8 +495,12 @@ function DesignProcess() {
         <figcaption><span>FIELD NOTES / PROTOTYPING / CRITIQUE</span><p>真实的项目工作记录：从用户调研、需求分析、方案迭代，到模型验证与最终呈现。</p></figcaption>
       </figure>
       <figure className="processPanel processPanel--secondary">
-        <div className="processPanel__image"><img src="/assets/studio-sketch-wall.webp" alt="来点设计实验室草图墙与方案讨论现场" width="1800" height="766" loading="lazy" /></div>
-        <figcaption><span>SKETCH WALL / STRUCTURE STUDY</span><p>把想法留在墙上，也把每一次判断留在产品里。</p></figcaption>
+        <div className="processPanel__image"><img src="/assets/studio-team.webp" alt="来点设计团队与工作室学员合影" width="1620" height="761" loading="lazy" /></div>
+        <figcaption><span>TEAM / COLLABORATION</span><p>由产品设计师与工作室学员组成的协作团队，在真实项目里共同讨论、验证与成长。</p></figcaption>
+      </figure>
+      <figure className="processPanel processPanel--team-group">
+        <div className="processPanel__image"><img src="/assets/studio-team-group.webp" alt="来点设计实验室团队集体合影" width="1620" height="761" loading="lazy" /></div>
+        <figcaption><span>LIKE.DESIGN / TOGETHER</span><p>让不同方向的判断汇聚在一起，把每一次合作变成更清晰的设计成果。</p></figcaption>
       </figure>
     </section>
   )
@@ -540,11 +549,19 @@ function AwardsGallery() {
             <img src="/assets/awards-ceremony-02.webp" alt="设计赛事与颁奖活动现场记录" width="1800" height="762" loading="lazy" />
             <figcaption><strong>AWARD MOMENTS</strong><span>BETTER DESIGN / BETTER FUTURE</span></figcaption>
           </figure>
-          <div className="certificateGrid" aria-label="获奖证书滚动画廊">
-            {awardImages.map((src, index) => (
+          <div className="certificateGrid certificateGrid--portrait" aria-label="竖版获奖证书滚动画廊">
+            {portraitAwardImages.map(({ src, index }) => (
               <figure className="certificateCard" key={src}>
-                <img src={src} alt={`来点设计实验室获奖证书 ${index + 1}`} width="1100" height="1500" loading="lazy" />
-                <figcaption><span>{String(index + 1).padStart(2, '0')}</span><span>AWARD ARCHIVE</span></figcaption>
+                <img src={src} alt={`来点设计实验室获奖证书 ${index}`} width="1100" height="1500" loading="lazy" />
+                <figcaption><span>{String(index).padStart(2, '0')}</span><span>AWARD ARCHIVE</span></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="certificateGrid certificateGrid--landscape" aria-label="横版获奖证书滚动画廊">
+            {landscapeAwardImages.map(({ src, index }) => (
+              <figure className="certificateCard certificateCard--landscape" key={src}>
+                <img src={src} alt={`来点设计实验室获奖证书 ${index}`} width="1500" height="1060" loading="lazy" />
+                <figcaption><span>{String(index).padStart(2, '0')}</span><span>AWARD ARCHIVE</span></figcaption>
               </figure>
             ))}
           </div>
