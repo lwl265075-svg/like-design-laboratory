@@ -104,13 +104,6 @@ a:focus-visible,
   object-fit: contain;
 }
 
-@media (max-width: 760px) {
-  .brandIntro__video {
-    width: min(86vw, 520px);
-    max-height: 58svh;
-  }
-}
-
 .brandIntro__skip,
 .brandIntro__edition {
   position: absolute;

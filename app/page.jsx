@@ -433,7 +433,6 @@ function BrandIntro({ onComplete }) {
         className="brandIntro__video"
         ref={videoRef}
         src="/assets/brand-intro.mp4"
-        poster="/assets/brand-logo.png"
         autoPlay
         muted
         playsInline
