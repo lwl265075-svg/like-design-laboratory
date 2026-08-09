@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SketchArchive from './SketchArchive'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
@@ -157,20 +158,97 @@ const projects = [
     tags: ['文创设计', '微缩景观', '文化好礼'],
     detail: '秉持绿色再生理念，致力于打造环保、可持续的艺术品。',
   },
+  {
+    title: 'DIVING ROBOTS',
+    type: '基于 AUV 水下伴游的海洋科普潜水服务设计',
+    image: '/assets/hero-diving-robots-20260808.png',
+    tags: ['水下伴游', '潜水服务', '沉浸式海底体验'],
+    detail: '面向零基础、不会游泳人群的智能伴游式休闲潜水沉浸式服务系统设计。',
+  },
+  {
+    title: 'MoxiLife',
+    type: '场景化思维下电子艾灸仪设计',
+    image: '/assets/project-23-moxilife.png',
+    tags: ['场景化产品设计', '电子艾灸仪', '中医现代康养'],
+    detail: '为用户打造一款随时随地、便捷高效且贴合其特定情境需求的艾灸养生设备。',
+  },
+  {
+    title: 'Luune智能引路颈脖',
+    type: '智能无障碍引路设备设计',
+    image: '/assets/project-24-luune.png',
+    tags: ['关怀设计', '智能产品', 'AI助手'],
+    detail: '构建人与环境、路人之间的双向沟通，提升视障者出行的安全性与独立性。',
+  },
+  {
+    title: 'OceanFun 智能全脸浮潜面罩',
+    type: '智能全脸浮潜面罩设计',
+    image: '/assets/project-25-oceanfun.png',
+    tags: ['水下伴游', '潜水服务', '生态科普', '沉浸式海底体验'],
+    detail: '集成 AI 识别、GPS 与 AR 显示，打造安全科普一体的免手持智能浮潜面罩。',
+  },
+  {
+    title: 'CompoSeq厨余堆肥站',
+    type: '社区厨余堆肥站设计',
+    image: '/assets/project-26-composeq.png',
+    tags: ['绿色设计', '可持续设计', '公共设施'],
+    detail: '践行环保共享理念，助力社区垃圾减量，打造绿色宜居环境。',
+  },
+  {
+    title: 'Legooor 模块化行李滑板车',
+    type: '模块化行李滑板车设计',
+    image: '/assets/project-27-legooor.png',
+    tags: ['智能产品', '户外产品', '电动滑板车'],
+    detail: '为用户提供更直观的方向指引，在拖行、乘坐与通勤之间实现灵活切换。',
+  },
 ]
 
-const featuredProjects = [projects[0], projects[1], projects[4], projects[6], projects[8]]
-const awardImages = Array.from({ length: 51 }, (_, index) => ({
-  index: index + 1,
-  src: `/assets/awards/award-${String(index + 1).padStart(2, '0')}.webp`,
-}))
-const portraitAwardImages = awardImages.filter(({ index }) => index <= 10 || (index >= 17 && index <= 31))
-const landscapeAwardImages = awardImages.filter(({ index }) => index >= 11 && index <= 16)
+const featuredProjects = [
+  {
+    title: 'DIVING ROBOTS',
+    type: '基于 AUV 水下伴游的海洋科普潜水服务设计',
+    image: '/assets/hero-diving-robots-20260808.png',
+    tags: ['水下伴游', '潜水服务', '沉浸式海底体验'],
+    detail: '以 AUV 智能水下载具为核心，构建兼具安全陪游、海洋科普与沉浸探索的潜水服务体验。',
+  },
+  projects[0],
+  {
+    ...projects[1],
+    image: '/assets/hero-glide-family-20260725.png',
+  },
+  {
+    ...projects[4],
+    title: 'NEATPAW',
+    type: '宠物指甲护理系统设计',
+    image: '/assets/hero-neatpaw-cat-20260725.png',
+    tags: ['工业设计', '宠物护理', '智能交互'],
+    detail: '围绕宠物指甲护理场景展开产品形态、握持结构与安全交互设计，强调温和、安心与高效护理体验。',
+  },
+  projects[6],
+  projects[8],
+  {
+    title: 'MoxiLife',
+    type: '场景化思维下电子艾灸仪设计',
+    image: '/assets/hero-moxilife-20260808.png',
+    tags: ['场景化产品设计', '电子艾灸仪', '中医现代康养'],
+    detail: '将传统艾灸体验转化为适配多种生活场景的现代康养产品，以灵活穿戴与模块化灸疗提升日常使用的便捷性。',
+  },
+]
+const awardImages = Array.from({ length: 56 }, (_, index) => {
+  const awardNumber = index + 1
+  const extension = awardNumber >= 52 ? 'png' : 'webp'
+
+  return {
+    index: awardNumber,
+    src: `/assets/awards/award-${String(awardNumber).padStart(2, '0')}.${extension}`,
+  }
+})
+const portraitAwardImages = awardImages.filter(({ index }) => index <= 10 || (index >= 17 && index <= 31) || index === 52)
+const landscapeAwardImages = awardImages.filter(({ index }) => (index >= 11 && index <= 16) || [53, 54].includes(index))
 const addedPortraitAwardImages = awardImages.filter(({ index }) =>
-  [34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47].includes(index),
+  [34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 55].includes(index),
 )
 const addedLandscapeAwardImages = awardImages.filter(({ index }) =>
-  [32, 33, 35, 48, 49, 50, 51].includes(index),
+  [32, 33, 35, 48, 49, 50, 51, 56].includes(index),
 )
 
 const ignifierStages = [
@@ -638,7 +716,7 @@ function AwardsGallery() {
       <div className="awardsStage" ref={stageRef}>
         <div className="awardsStage__header">
           <div><span>03 / RECOGNITION</span><h2>获奖与现场</h2></div>
-          <p>51 RECENT AWARDS · 2023—2026</p>
+          <p>{awardImages.length} RECENT AWARDS · 2023—2026</p>
         </div>
         <div className="awardsTrack" ref={trackRef}>
           <figure className="awardScene awardScene--wide">
@@ -682,7 +760,7 @@ function AwardsGallery() {
             ))}
           </div>
           <div className="awardsTrack__end">
-            <span>51 / 51</span>
+            <span>{awardImages.length} / {awardImages.length}</span>
             <strong>持续实践，<br />让成果发生。</strong>
             <p>KEEP MAKING · KEEP QUESTIONING</p>
           </div>
@@ -1041,6 +1119,7 @@ function HomePage({ introComplete, onIntroComplete, onOpenProject }) {
         <HeroCarousel isReady={introComplete} />
         <ScrollDock isReady={introComplete} />
         <SelectedWorks onOpen={onOpenProject} />
+        <SketchArchive />
         <DesignProcess />
         <AwardsGallery />
         <ContactSection />
