@@ -380,6 +380,16 @@ function BrandIntro({ onComplete }) {
   const videoRef = useRef(null)
   const hasFinishedRef = useRef(false)
 
+  const startPlayback = useCallback(() => {
+    const video = videoRef.current
+    if (!video || hasFinishedRef.current) return
+
+    video.muted = true
+    video.defaultMuted = true
+    video.setAttribute('muted', '')
+    video.play().catch(() => {})
+  }, [])
+
   const finish = useCallback(() => {
     if (hasFinishedRef.current) return
     hasFinishedRef.current = true
@@ -398,10 +408,24 @@ function BrandIntro({ onComplete }) {
       const timeoutId = window.setTimeout(finish, 220)
       return () => window.clearTimeout(timeoutId)
     }
-    videoRef.current?.play().catch(() => {})
+
+    const retryOnVisible = () => {
+      if (document.visibilityState === 'visible') startPlayback()
+    }
+    const animationFrameId = window.requestAnimationFrame(startPlayback)
+    window.addEventListener('pageshow', startPlayback)
+    document.addEventListener('visibilitychange', retryOnVisible)
+    document.addEventListener('touchstart', startPlayback, { once: true, passive: true })
     const fallbackId = window.setTimeout(finish, 5000)
-    return () => window.clearTimeout(fallbackId)
-  }, [finish])
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId)
+      window.clearTimeout(fallbackId)
+      window.removeEventListener('pageshow', startPlayback)
+      document.removeEventListener('visibilitychange', retryOnVisible)
+      document.removeEventListener('touchstart', startPlayback)
+    }
+  }, [finish, startPlayback])
 
   return (
     <section className="brandIntro" ref={rootRef} aria-label="来点设计实验室品牌开场">
@@ -409,9 +433,15 @@ function BrandIntro({ onComplete }) {
         className="brandIntro__video"
         ref={videoRef}
         src="/assets/brand-intro.mp4"
+        poster="/assets/brand-logo.png"
+        autoPlay
         muted
         playsInline
+        webkit-playsinline="true"
+        x5-playsinline="true"
         preload="auto"
+        onLoadedData={startPlayback}
+        onCanPlay={startPlayback}
         onEnded={finish}
         aria-label="来点设计实验室 Logo 动画"
       />
