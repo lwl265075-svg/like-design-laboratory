@@ -377,12 +377,13 @@ function ArrowIcon({ direction = 'right' }) {
 
 function BrandIntro({ onComplete }) {
   const rootRef = useRef(null)
-  const videoRef = useRef(null)
+  const mediaRef = useRef(null)
   const hasFinishedRef = useRef(false)
+  const [isMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches)
 
   const startPlayback = useCallback(() => {
-    const video = videoRef.current
-    if (!video || hasFinishedRef.current) return
+    const video = mediaRef.current
+    if (!video || video.tagName !== 'VIDEO' || hasFinishedRef.current) return
 
     video.muted = true
     video.defaultMuted = true
@@ -399,7 +400,7 @@ function BrandIntro({ onComplete }) {
       return
     }
     gsap.timeline({ onComplete })
-      .to(videoRef.current, { scale: 0.985, duration: 0.3, ease: 'power2.inOut' })
+      .to(mediaRef.current, { scale: 0.985, duration: 0.3, ease: 'power2.inOut' })
       .to(root, { yPercent: -100, duration: 0.78, ease: 'power4.inOut' }, '-=0.06')
   }, [onComplete])
 
@@ -407,6 +408,11 @@ function BrandIntro({ onComplete }) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const timeoutId = window.setTimeout(finish, 220)
       return () => window.clearTimeout(timeoutId)
+    }
+
+    if (isMobile) {
+      const mobileAnimationId = window.setTimeout(finish, 4086)
+      return () => window.clearTimeout(mobileAnimationId)
     }
 
     const retryOnVisible = () => {
@@ -425,25 +431,34 @@ function BrandIntro({ onComplete }) {
       document.removeEventListener('visibilitychange', retryOnVisible)
       document.removeEventListener('touchstart', startPlayback)
     }
-  }, [finish, startPlayback])
+  }, [finish, isMobile, startPlayback])
 
   return (
     <section className="brandIntro" ref={rootRef} aria-label="来点设计实验室品牌开场">
-      <video
-        className="brandIntro__video"
-        ref={videoRef}
-        src="/assets/brand-intro.mp4"
-        autoPlay
-        muted
-        playsInline
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        preload="auto"
-        onLoadedData={startPlayback}
-        onCanPlay={startPlayback}
-        onEnded={finish}
-        aria-label="来点设计实验室 Logo 动画"
-      />
+      {isMobile ? (
+        <img
+          className="brandIntro__mobileAnimation"
+          ref={mediaRef}
+          src="/assets/brand-intro-mobile.gif"
+          alt="来点设计实验室 Logo 动画"
+          width="720"
+          height="405"
+        />
+      ) : (
+        <video
+          className="brandIntro__video"
+          ref={mediaRef}
+          src="/assets/brand-intro.mp4"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onLoadedData={startPlayback}
+          onCanPlay={startPlayback}
+          onEnded={finish}
+          aria-label="来点设计实验室 Logo 动画"
+        />
+      )}
       <button className="brandIntro__skip" type="button" onClick={finish}>SKIP <span>↗</span></button>
       <span className="brandIntro__edition">LIKE.DESIGN / 2026</span>
     </section>

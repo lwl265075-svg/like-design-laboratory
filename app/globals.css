@@ -98,7 +98,9 @@ a:focus-visible,
   background: #000;
 }
 
-.brandIntro__video {
+.brandIntro__video,
+.brandIntro__mobileAnimation {
+  display: block;
   width: min(74vw, 980px);
   max-height: 72vh;
   object-fit: contain;
